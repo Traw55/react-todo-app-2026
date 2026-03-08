@@ -9,12 +9,28 @@ import TaskInput from "./components/TaskInput";
 import TaskList from "./components/TaskList";
 
 /**
+ * دوال حماية التخزين المحلي / Safe LocalStorage Helpers
+ */
+const safeGetItem = (key, defaultValue) => {
+  try {
+    const val = localStorage.getItem(key);
+    return val ? JSON.parse(val) : defaultValue;
+  } catch {
+    return defaultValue;
+  }
+};
+
+const safeSetItem = (key, value) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {}
+};
+
+/**
  * المكون الرئيسي للتطبيق - يدير الحالة العامة والمنطق البرمجي
- * Main App Component - Manages global state and application logic
  */
 function App() {
   // --- دوال مساعدة للوقت والتاريخ / Date and Time Helpers ---
-  
   const getDefaultTime = () => {
     const d = new Date();
     d.setHours(d.getHours() + 1);
@@ -26,16 +42,15 @@ function App() {
   };
 
   // --- حالات التطبيق (State Management) ---
-
-  const [userName, setUserName] = useState(() => localStorage.getItem("userName") || "");
+  const [userName, setUserName] = useState(() => safeGetItem("userName", ""));
   const [isEditingName, setIsEditingName] = useState(false);
   const [task, setTask] = useState("");
   const [scheduledTime, setScheduledTime] = useState(getDefaultTime());
   const [scheduledDate, setScheduledDate] = useState(getDefaultDate());
   const [reminderOffset, setReminderOffset] = useState(0);
-  const [todos, setTodos] = useState(() => JSON.parse(localStorage.getItem("todos")) || []);
-  const [lang, setLang] = useState(() => localStorage.getItem("lang") || "ar");
-  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
+  const [todos, setTodos] = useState(() => safeGetItem("todos", []));
+  const [lang, setLang] = useState(() => safeGetItem("lang", "ar"));
+  const [theme, setTheme] = useState(() => safeGetItem("theme", "dark"));
   const [currentTime, setCurrentTime] = useState(new Date());
   const [editingIndex, setEditingIndex] = useState(null);
   const [editTask, setEditTask] = useState("");
@@ -56,7 +71,6 @@ function App() {
   const t = translations[lang];
 
   // --- دوال منطقية (Logic Functions) ---
-
   const getTaskLabel = (count) => {
     if (lang === "ar") {
       if (count === 1) return t.task1;
@@ -68,33 +82,30 @@ function App() {
   };
 
   // --- التأثيرات الجانبية (Effects) ---
-
-  // حفظ البيانات في التخزين المحلي / Save data to localStorage
   useEffect(() => {
-    localStorage.setItem("userName", userName);
-    localStorage.setItem("todos", JSON.stringify(todos));
-    localStorage.setItem("lang", lang);
-    localStorage.setItem("theme", theme);
+    safeSetItem("userName", userName);
+    safeSetItem("todos", todos);
+    safeSetItem("lang", lang);
+    safeSetItem("theme", theme);
   }, [userName, todos, lang, theme]);
 
-  // تحديث الوقت الحالي وطلب إذن التنبيهات / Update current time and request notification permission
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
 
-    if (Notification.permission === "default") {
+    // حماية Notification
+    if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
 
     return () => clearInterval(timer);
   }, []);
 
-  // فحص المهام التي حان موعدها لإرسال تنبيهات / Check tasks due for notifications
   useEffect(() => {
     const checkNotifications = setInterval(() => {
       const now = new Date();
-      
+
       setTodos(prevTodos => {
         let hasChanges = false;
         const updatedTodos = prevTodos.map(todo => {
@@ -103,22 +114,24 @@ function App() {
           const taskDateTime = new Date(`${todo.date}T${todo.time}`);
           const diffMins = Math.floor((taskDateTime - now) / 60000);
 
-          // 1. تنبيه مسبق / Pre-reminder notification
-          if (todo.reminderOffset > 0 && diffMins === todo.reminderOffset && !todo.notifiedBefore) {
-            new Notification(t.notificationTitle, {
-              body: `${t.reminderPrefix} ${todo.text} (${todo.reminderOffset} ${lang === "ar" ? "دقائق" : "mins"})`,
-            });
-            hasChanges = true;
-            return { ...todo, notifiedBefore: true };
-          }
+          if ("Notification" in window) {
+            // 1. تنبيه مسبق / Pre-reminder
+            if (todo.reminderOffset > 0 && diffMins === todo.reminderOffset && !todo.notifiedBefore) {
+              new Notification(t.notificationTitle, {
+                body: `${t.reminderPrefix} ${todo.text} (${todo.reminderOffset} ${lang === "ar" ? "دقائق" : "mins"})`,
+              });
+              hasChanges = true;
+              return { ...todo, notifiedBefore: true };
+            }
 
-          // 2. تنبيه الموعد الفعلي / Exact time notification
-          if (diffMins === 0 && !todo.notified) {
-            new Notification(t.notificationTitle, {
-              body: `${t.duePrefix} ${todo.text}`,
-            });
-            hasChanges = true;
-            return { ...todo, notified: true };
+            // 2. تنبيه الموعد الفعلي / Exact
+            if (diffMins === 0 && !todo.notified) {
+              new Notification(t.notificationTitle, {
+                body: `${t.duePrefix} ${todo.text}`,
+              });
+              hasChanges = true;
+              return { ...todo, notified: true };
+            }
           }
 
           return todo;
@@ -126,14 +139,12 @@ function App() {
 
         return hasChanges ? updatedTodos : prevTodos;
       });
-    }, 30000); // Check every 30 seconds
+    }, 30000);
 
     return () => clearInterval(checkNotifications);
   }, [lang, t]);
 
-
   // --- معالجات الأحداث (Event Handlers) ---
-
   const addTodo = () => {
     if (task.trim() === "") {
       alert(t.emptyTaskError);
@@ -147,10 +158,10 @@ function App() {
         date: scheduledDate,
         reminderOffset: reminderOffset,
         completed: false,
-      notified: false,
-      notifiedBefore: false,
-    },
-  ]);
+        notified: false,
+        notifiedBefore: false,
+      },
+    ]);
     setTask("");
     setScheduledTime(getDefaultTime());
     setScheduledDate(getDefaultDate());
@@ -256,23 +267,26 @@ function App() {
     const seconds = date.getSeconds().toString().padStart(2, "0");
     const ampm = hours >= 12 ? t.pm : t.am;
     hours = hours % 12;
-    hours = hours ? hours : 12; // الساعة 0 تصبح 12
+    hours = hours ? hours : 12;
     const hoursStr = hours.toString().padStart(2, "0");
     
     return `${hoursStr}:${minutes}:${seconds} ${ampm}`;
   };
 
   const formatDate = (date) => {
-    return date.toLocaleDateString(lang === "ar" ? "ar-SA-u-nu-latn" : "en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    try {
+      return date.toLocaleDateString(lang === "ar" ? "ar-SA-u-nu-latn" : "en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    } catch {
+      return date.toDateString();
+    }
   };
 
   // --- منطق التصنيف والفلترة / Sorting and Filtering Logic ---
-
   const now = new Date();
   const todayStr = now.toISOString().split("T")[0];
   const currentTimeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
@@ -300,11 +314,9 @@ function App() {
   };
 
   // --- عرض المكون (Render) ---
-
   return (
     <div className={`app-wrapper ${lang === "ar" ? "rtl" : "ltr"} ${theme}-theme`}>
       <div className="web-container">
-        {/* رأس الصفحة / Header */}
         <Header 
           isEditingName={isEditingName}
           userName={userName}
@@ -318,19 +330,14 @@ function App() {
           toggleLang={toggleLang}
           t={t}
         />
-
         <main>
           <h1 className="main-title">{t.title}</h1>
-
-          {/* شريط التقدم / Progress Bar */}
           <ProgressBar 
             totalTasks={totalTasks}
             completedTasks={completedTasks}
             progressPercentage={progressPercentage}
             t={t}
           />
-
-          {/* مدخل المهام / Task Input Form */}
           <TaskInput 
             task={task}
             setTask={setTask}
@@ -343,8 +350,6 @@ function App() {
             addTodo={addTodo}
             t={t}
           />
-
-          {/* قائمة المهام / Task List Section */}
           <TaskList 
             todos={todos}
             categories={categories}
