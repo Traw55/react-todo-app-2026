@@ -395,12 +395,20 @@ main {
   font-family: inherit;
 }
 
-/* Fix for RTL native date/time inputs */
+/* Fix for RTL native date/time inputs - prevent mangling of slashes and numbers */
 .rtl .date-input, .rtl .time-input, .rtl .edit-date-input, .rtl .edit-time-input {
-  direction: ltr;
-  text-align: right;
-  /* Add padding to the right so text doesn't overlap the native picker icon which moves to the right in LTR */
-  padding-right: 30px; 
+  direction: ltr !important;
+  text-align: left !important;
+  /* Add padding to the left to avoid text sticking to the edge in LTR */
+  padding-left: 12px !important;
+  /* Add padding to the right for the native picker icon */
+  padding-right: 30px !important;
+}
+
+/* Ensure placeholder is visible if needed, although native inputs often have their own formatting */
+.rtl .date-input::-webkit-datetime-edit, 
+.rtl .time-input::-webkit-datetime-edit {
+  display: flex;
 }
 
 .reminder-group, .edit-reminder-group {

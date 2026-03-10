@@ -283,7 +283,7 @@ function App() {
 
   const formatDate = (date) => {
     try {
-      return date.toLocaleDateString(lang === "ar" ? "ar-SA-u-nu-latn" : "en-US", {
+      return date.toLocaleDateString(lang === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US", {
         weekday: "long",
         year: "numeric",
         month: "long",
