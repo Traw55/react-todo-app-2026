@@ -2,17 +2,17 @@
  * مكون إدخال المهام - يحتوي على نموذج لإضافة مهام جديدة مع الوقت والتاريخ والتذكير
  * Task Input Component - Contains form for adding new tasks with time, date, and reminder
  */
-const TaskInput = ({ 
-  task, 
-  setTask, 
-  scheduledDate, 
-  setScheduledDate, 
-  scheduledTime, 
-  setScheduledTime, 
-  reminderOffset, 
-  setReminderOffset, 
-  addTodo, 
-  t 
+const TaskInput = ({
+  task,
+  setTask,
+  scheduledDate,
+  setScheduledDate,
+  scheduledTime,
+  setScheduledTime,
+  reminderOffset,
+  setReminderOffset,
+  addTodo,
+  t
 }) => {
   return (
     <aside className="input-section">
@@ -26,17 +26,26 @@ const TaskInput = ({
           onKeyDown={(e) => e.key === "Enter" && addTodo()}
         />
         
-        {/* شبكة الوقت والتاريخ / Date and Time grid */}
         <div className="date-time-grid">
-          {/* اختيار التاريخ والوقت معًا */}
-          <div className="schedule-group" style={{gridColumn: 'span 2'}}>
+          {/* التاريخ */}
+          <div className="schedule-group">
             <label>{t.scheduleDateLabel}</label>
             <input
-              type="datetime-local"
+              type="date"
               className="date-input"
               value={scheduledDate}
               onChange={(e) => setScheduledDate(e.target.value)}
-              style={{direction: 'rtl', textAlign: 'right'}}
+            />
+          </div>
+
+          {/* الوقت */}
+          <div className="schedule-group">
+            <label>{t.scheduleTimeLabel}</label>
+            <input
+              type="time"
+              className="time-input"
+              value={scheduledTime}
+              onChange={(e) => setScheduledTime(e.target.value)}
             />
           </div>
         </div>
@@ -44,7 +53,7 @@ const TaskInput = ({
         {/* اختيار وقت التذكير / Reminder offset selection */}
         <div className="reminder-group">
           <label>{t.reminderLabel}</label>
-          <select 
+          <select
             className="reminder-select"
             value={reminderOffset}
             onChange={(e) => setReminderOffset(parseInt(e.target.value))}
