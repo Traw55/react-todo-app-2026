@@ -875,6 +875,19 @@ main {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+/* مهمة قديمة وغير مكتملة */
+.red-task {
+  border-color: var(--danger) !important;
+  background: rgba(239, 68, 68, 0.08) !important;
+}
+
+/* مهمة قديمة ومكتملة */
+.green-task {
+  border-color: var(--success) !important;
+  background: rgba(16, 185, 129, 0.18) !important;
+}
+
+
 .todo-list li:hover {
   border-color: var(--accent-blue);
   transform: translateY(-2px);

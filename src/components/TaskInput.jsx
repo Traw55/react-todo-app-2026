@@ -14,6 +14,20 @@ const TaskInput = ({
   addTodo,
   t
 }) => {
+  // Helper to show user-friendly date
+  const formatDisplayDate = (isoDate, locale = navigator.language || "en-US") => {
+    if (!isoDate) return "";
+    const dateObj = new Date(isoDate);
+    return dateObj.toLocaleDateString(locale, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const locale = navigator.language || "en-US";
+  const displayDate = formatDisplayDate(scheduledDate, locale);
+
   return (
     <aside className="input-section">
       <div className="input-group">
@@ -25,7 +39,7 @@ const TaskInput = ({
           placeholder={t.placeholder}
           onKeyDown={(e) => e.key === "Enter" && addTodo()}
         />
-        
+
         <div className="date-time-grid">
           {/* التاريخ */}
           <div className="schedule-group">
@@ -35,7 +49,17 @@ const TaskInput = ({
               className="date-input"
               value={scheduledDate}
               onChange={(e) => setScheduledDate(e.target.value)}
+              pattern="\d{4}-\d{2}-\d{2}"
+              inputMode="numeric"
+              lang={locale}
             />
+            <div className="date-display">
+              {displayDate && (
+                <span style={{ fontSize: "0.9em", color: "#888" }}>
+                  {displayDate}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* الوقت */}
@@ -46,6 +70,8 @@ const TaskInput = ({
               className="time-input"
               value={scheduledTime}
               onChange={(e) => setScheduledTime(e.target.value)}
+              inputMode="numeric"
+              lang={locale}
             />
           </div>
         </div>

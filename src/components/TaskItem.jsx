@@ -37,9 +37,16 @@ const TaskItem = ({
     return `${h.toString().padStart(2, "0")}:${minutes} ${ampm}`;
   };
 
+  // منطق اللون حسب حالة المهمة
+  const now = new Date();
+  const taskDateTime = new Date(`${todo.date}T${todo.time}`);
+  let colorClass = "";
+  if (taskDateTime < now && !todo.completed) colorClass = "red-task";
+  if (taskDateTime < now && todo.completed) colorClass = "green-task";
+
   return (
     <li 
-      className={`${todo.completed ? "completed" : ""} ${isEditing ? "editing" : ""} ${isSelected ? "selected" : ""} ${(todo.date < todayStr || (todo.date === todayStr && todo.time < editTime)) && !todo.completed ? "red-task" : ""}`}
+      className={`${todo.completed ? "completed" : ""} ${isEditing ? "editing" : ""} ${isSelected ? "selected" : ""} ${colorClass}`}
       onClick={() => selectionMode && toggleSelection(index)}
     >
       {/* وضع التحديد / Selection mode checkbox */}
