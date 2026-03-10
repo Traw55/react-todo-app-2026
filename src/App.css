@@ -1,11 +1,4 @@
 /* مهام نشطة انتهى وقتها ولم تكتمل */
-.red-task {
-  background: rgba(239, 68, 68, 0.13) !important;
-  border-color: rgba(239, 68, 68, 0.25) !important;
-}
-.dark-theme .red-task {
-  background: rgba(239, 68, 68, 0.22) !important;
-}
 :root {
   /* Common */
   --accent-blue: #3b82f6;
@@ -837,28 +830,16 @@ main {
 }
 
 .bulk-confirm-btn.active {
-  background: var(--danger);
-  color: white;
-  cursor: pointer;
-}
-
-.selection-checkbox {
-  margin-inline-end: 15px;
-}
-
-.checkbox-custom {
-  width: 22px;
-  height: 22px;
-  border: 2px solid var(--glass-border);
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-
-.checkbox-custom.checked {
-  background: var(--accent-blue);
+  background: var(--bg-input);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 12px;
+  border-radius: 12px;
+  width: 100%;
+  font-size: 0.9rem;
+  outline: none;
+  box-sizing: border-box;
+  font-family: inherit;
   border-color: var(--accent-blue);
 }
 
