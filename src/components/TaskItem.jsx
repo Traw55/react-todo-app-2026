@@ -39,7 +39,7 @@ const TaskItem = ({
 
   return (
     <li 
-      className={`${todo.completed ? "completed" : ""} ${isEditing ? "editing" : ""} ${isSelected ? "selected" : ""}`}
+      className={`${todo.completed ? "completed" : ""} ${isEditing ? "editing" : ""} ${isSelected ? "selected" : ""} ${(todo.date < todayStr || (todo.date === todayStr && todo.time < editTime)) && !todo.completed ? "red-task" : ""}`}
       onClick={() => selectionMode && toggleSelection(index)}
     >
       {/* وضع التحديد / Selection mode checkbox */}
@@ -107,10 +107,6 @@ const TaskItem = ({
           <div className="todo-content">
             <span className="todo-text">{todo.text}</span>
             <div className="todo-meta">
-              {/* وسم المهمة المتأخرة / Overdue tag */}
-              {todo.date < todayStr && !todo.completed && (
-                <span className="overdue-tag">⚠️ {lang === "ar" ? "متأخرة" : "Overdue"}</span>
-              )}
               <span className="todo-date">{todo.date}</span>
               <span className="todo-time">{formatTime12h(todo.time)}</span>
             </div>

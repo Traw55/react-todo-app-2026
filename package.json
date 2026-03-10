@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "core-js": "^3.48.0",
+    "framer-motion": "^12.35.2",
     "react": "^19.2.0",
+    "react-datepicker": "^9.1.0",
     "react-dom": "^19.2.0",
     "regenerator-runtime": "^0.14.1"
   },

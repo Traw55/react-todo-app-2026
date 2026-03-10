@@ -1,3 +1,11 @@
+/* مهام نشطة انتهى وقتها ولم تكتمل */
+.red-task {
+  background: rgba(239, 68, 68, 0.13) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
+}
+.dark-theme .red-task {
+  background: rgba(239, 68, 68, 0.22) !important;
+}
 :root {
   /* Common */
   --accent-blue: #3b82f6;
@@ -883,13 +891,13 @@ main {
 }
 
 .completed {
-  opacity: 0.7;
-  background: rgba(16, 185, 129, 0.03) !important;
-  border-color: rgba(16, 185, 129, 0.2) !important;
+  opacity: 0.85;
+  background: rgba(16, 185, 129, 0.13) !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
 }
 
 .dark-theme .completed {
-  background: rgba(16, 185, 129, 0.05) !important;
+  background: rgba(16, 185, 129, 0.22) !important;
 }
 
 .completed .todo-text {

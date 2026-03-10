@@ -301,6 +301,7 @@ function App() {
 
   const categories = {
     overdue: filteredTodos.filter(t => !t.completed && (t.date < todayStr || (t.date === todayStr && t.time < currentTimeStr)) && (filterTab === "all" || filterTab === "active")),
+    pastOverdue: filteredTodos.filter(t => t.completed && (t.date < todayStr || (t.date === todayStr && t.time < currentTimeStr)) && (filterTab === "all" || filterTab === "completed")),
     current: filteredTodos.filter(t => !t.completed && t.date === todayStr && t.time >= currentTimeStr && (filterTab === "all" || filterTab === "active")),
     upcoming: filteredTodos.filter(t => !t.completed && t.date > todayStr && (filterTab === "all" || filterTab === "active")),
     completed: filteredTodos.filter(t => t.completed && (filterTab === "all" || filterTab === "completed"))
