@@ -185,29 +185,25 @@ header {
 
   header {
     padding: 20px;
-    display: block; /* Change from flex to block for custom layout */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
     text-align: start;
   }
 
   .header-actions {
-    position: absolute;
-    top: 15px;
+    position: static;
     display: flex;
     gap: 8px;
-  }
-
-  /* In LTR, buttons on right */
-  .ltr .header-actions {
-    right: 15px;
-  }
-
-  /* In RTL, buttons on left */
-  .rtl .header-actions {
-    left: 15px;
+    align-self: flex-end;
   }
 
   .welcome-section {
-    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 0;
+    width: 100%;
   }
 
   .input-group {
@@ -217,6 +213,21 @@ header {
 
   .welcome-section h2, .name-input {
     font-size: 1.3rem;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  .name-display {
+    flex-wrap: wrap;
+  }
+
+  .name-edit-group {
+    width: 100%;
+  }
+
+  .name-input {
+    width: 100%;
+    box-sizing: border-box;
   }
 
   main {
@@ -733,6 +744,26 @@ main {
   animation: slideDown 0.3s ease-out;
 }
 
+@media (max-width: 600px) {
+  .selection-action-bar {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 16px;
+    align-items: stretch;
+  }
+  
+  .selection-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .bulk-confirm-btn, .bulk-cancel-btn {
+    flex: 1;
+    text-align: center;
+  }
+}
+
 @keyframes slideDown {
   from { transform: translateY(-20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
@@ -925,6 +956,26 @@ main {
   display: flex;
   gap: 8px;
   margin-inline-start: 16px;
+}
+
+@media (max-width: 600px) {
+  .todo-list li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 16px;
+  }
+  
+  .todo-content {
+    width: 100%;
+    word-break: break-word;
+  }
+
+  .item-actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-inline-start: 0;
+  }
 }
 
 .complete-btn {
