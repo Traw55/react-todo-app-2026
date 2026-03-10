@@ -392,6 +392,15 @@ main {
   font-size: 0.9rem;
   outline: none;
   box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* Fix for RTL native date/time inputs */
+.rtl .date-input, .rtl .time-input, .rtl .edit-date-input, .rtl .edit-time-input {
+  direction: ltr;
+  text-align: right;
+  /* Add padding to the right so text doesn't overlap the native picker icon which moves to the right in LTR */
+  padding-right: 30px; 
 }
 
 .reminder-group, .edit-reminder-group {
