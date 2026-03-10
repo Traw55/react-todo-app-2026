@@ -28,24 +28,15 @@ const TaskInput = ({
         
         {/* شبكة الوقت والتاريخ / Date and Time grid */}
         <div className="date-time-grid">
-          {/* اختيار التاريخ / Date selection */}
-          <div className="schedule-group">
+          {/* اختيار التاريخ والوقت معًا */}
+          <div className="schedule-group" style={{gridColumn: 'span 2'}}>
             <label>{t.scheduleDateLabel}</label>
             <input
-              type="date"
+              type="datetime-local"
               className="date-input"
               value={scheduledDate}
               onChange={(e) => setScheduledDate(e.target.value)}
-            />
-          </div>
-          {/* اختيار الوقت / Time selection */}
-          <div className="schedule-group">
-            <label>{t.scheduleTimeLabel}</label>
-            <input
-              type="time"
-              className="time-input"
-              value={scheduledTime}
-              onChange={(e) => setScheduledTime(e.target.value)}
+              style={{direction: 'rtl', textAlign: 'right'}}
             />
           </div>
         </div>

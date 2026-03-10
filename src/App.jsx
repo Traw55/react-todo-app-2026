@@ -150,12 +150,20 @@ function App() {
       alert(t.emptyTaskError);
       return;
     }
+    // فصل قيمة datetime-local
+    let date = scheduledDate;
+    let time = scheduledTime;
+    if (scheduledDate && scheduledDate.includes("T")) {
+      const [d, t] = scheduledDate.split("T");
+      date = d;
+      time = t;
+    }
     setTodos([
       ...todos,
       {
         text: task,
-        time: scheduledTime,
-        date: scheduledDate,
+        time: time,
+        date: date,
         reminderOffset: reminderOffset,
         completed: false,
         notified: false,
